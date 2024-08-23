@@ -31,10 +31,10 @@
 # ernzo:
 # "This modification fixes the integration between Nemo and Ultracopier, and uses CopyQ to make the actual copy.
 #
-# Caveat is: initally you'll need to perform the Copy/Paste operation twice because,
+# Caveat is: Sometimes initally you'll need to perform the Copy/Paste operation twice because,
 # the first time you run the script CopyQ will not be running (unless you launch it manually), and so it won't be able to capture the clipboard contents..
 #
-# The second time you perform Copy/"Paste with Ultracopier" copyq will be running, and the script shall work as intended.
+# The second time you perform Copy/"Paste with Ultracopier" copyq will be running, and the script will work as intended.
 #
 # It works allright here with:
 # Debian (trixie) + KDE Plasma/Wayland + latest stock Nemo + Ultracopier + CopyQ.
@@ -54,7 +54,7 @@
 # and ChatGPT + Copilot who did the rough work..
 #
 # This is probably not a definitive solution, 
-# but maybe there's something we can learn about it, and can be implemented in a more definitive solution."
+# but maybe there's something we can learn about it, and can be implemented in a more definitive one."
 #
 # ----------------------------------------------------------------------------
 #
