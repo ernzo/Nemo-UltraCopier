@@ -26,28 +26,97 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-import mimetypes
+# ----------------------------------------------------------------------------
+#
+# ernzo:
+# "This modification fixes the integration between Nemo and Ultracopier, and uses CopyQ to make the actual copy.
+#
+# Caveat is: initally you'll need to perform the Copy/Paste operation twice because,
+# the first time you run the script CopyQ will not be running (unless you launch it manually), and so it won't be able to capture the clipboard contents..
+#
+# The second time you perform Copy/"Paste with Ultracopier" copyq will be running, and the script shall work as intended.
+#
+# It works allright here with:
+# Debian (trixie) + KDE Plasma/Wayland + latest stock Nemo + Ultracopier + CopyQ.
+# (Gnome and Mate are installed too but not running)
+#
+#
+# -Btw this script was made by torturing ChatGPT for hours until it made it right, or almost.. 
+# The first version did perform the copy/paste allright, but failed to launch CopyQ on its own, so it needed to be launched manually.
+#
+# Then I asked Copilot to fix the script, 
+# and it made one that could launch copyq automatically on its own.. but failed to perform the actual copy/paste.
+#
+# So I went back to ChatGPT and asked to integrate one thing into the other..
+# And well, this is the final result!
+#
+# All credits to the Original Developer/s, Lester,
+# and ChatGPT + Copilot who did the rough work..
+#
+# This is probably not a definitive solution, 
+# but maybe there's something we can learn about it, and can be implemented in a more definitive solution."
+#
+# ----------------------------------------------------------------------------
+#
+#
+#! /usr/bin/python3
+import subprocess
 import sys
+import urllib.parse
 import os
-import urllib
-from gi.repository import Gtk, Gdk
 
-clipboard  = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-result = clipboard.wait_for_contents(Gdk.Atom.intern("x-special/gnome-copied-files", False))
-if result is not None:
-    info = result.get_data().splitlines()
-    action = info[0]
-    files = info[1:]
-    fileList = ""
-    for file in files:
-        if file.index("file://") == 0:
-            fileList += " '" + urllib.unquote(file[7:]) + "'"
+def start_copyq():
+    # Check if CopyQ server is already running
+    result = subprocess.run(['pgrep', 'copyq'], capture_output=True, text=True)
+    if result.returncode == 0:
+        print("CopyQ is already running.")
+    else:
+        # Start CopyQ server
+        os.system("copyq &")
+        print("CopyQ started.")
 
-    print fileList
-    print sys.argv[1]
-    if action == "copy":
-        os.system("ultracopier cp %s '%s'" % (fileList, urllib.unquote(sys.argv[1])))
-    elif action == "cut":
-        os.system("ultracopier mv %s '%s'" % (fileList, urllib.unquote(sys.argv[1])))
+def get_clipboard_data():
+    try:
+        # Fetch clipboard data using CopyQ
+        result = subprocess.run(['copyq', 'read', '0'], capture_output=True, text=True)
+        if result.returncode == 0:
+            data = result.stdout.strip()
+            print(f"Clipboard Data Retrieved: {data}")
+            return data
+        else:
+            print(f"Error running CopyQ command: {result.stderr}")
+            return None
+    except Exception as e:
+        print(f"Exception: {e}")
+        return None
 
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: nemo-ultracopier.py <destination_directory>")
+        sys.exit(1)
+
+    # Start CopyQ if not running
+    start_copyq()
+
+    clipboard_data = get_clipboard_data()
+    if clipboard_data:
+        print(f"Clipboard text: {clipboard_data}")
+
+        # Assuming clipboard_data might contain file URIs for copying
+        destination = urllib.parse.unquote(sys.argv[1])
+
+        # Format sources and destination
+        sources = clipboard_data.split('\n')  # Assuming each line is a source file
+        sources_formatted = ' '.join(f'"{source}"' for source in sources)
+
+        # Construct UltraCopier command
+        command = f"/usr/bin/ultracopier cp {sources_formatted} \"{destination}\""
+        print(f"Executing command: {command}")
+
+        # Execute the command
+        os.system(command)
+    else:
+        print("No valid clipboard data found.")
+
+if __name__ == "__main__":
+    main()
