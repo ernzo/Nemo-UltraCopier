@@ -41,7 +41,7 @@
 # (Gnome and Mate are installed too but not running)
 #
 #
-# All credits Lester and Original Developers.
+# All credits to Lester and Original Developers.
 #
 ## This is probably not a definitive solution, 
 # but maybe there's something we can learn about it, and can be implemented in a more definitive one."
