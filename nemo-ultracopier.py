@@ -41,19 +41,9 @@
 # (Gnome and Mate are installed too but not running)
 #
 #
-# -Btw this script was made by torturing ChatGPT for hours until it made it right, or almost.. 
-# The first version did perform the copy/paste allright, but failed to launch CopyQ on its own, so it needed to be launched manually.
+# All credits Lester and Original Developers.
 #
-# Then I asked Copilot to fix the script, 
-# and it made one that could launch copyq automatically on its own.. but failed to perform the actual copy/paste.
-#
-# So I went back to ChatGPT and asked to integrate one thing into the other..
-# And well, this is the final result!
-#
-# All credits to the Original Developer/s, Lester,
-# and ChatGPT + Copilot who did the rough work..
-#
-# This is probably not a definitive solution, 
+## This is probably not a definitive solution, 
 # but maybe there's something we can learn about it, and can be implemented in a more definitive one."
 #
 # ----------------------------------------------------------------------------
