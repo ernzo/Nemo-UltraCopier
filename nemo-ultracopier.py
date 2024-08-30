@@ -56,18 +56,18 @@ import urllib.parse
 import os
 
 def start_copyq():
-    # Check if CopyQ server is already running
+    # Check if CopyQ is running
     result = subprocess.run(['pgrep', 'copyq'], capture_output=True, text=True)
     if result.returncode == 0:
         print("CopyQ is already running.")
     else:
-        # Start CopyQ server
+        # Start CopyQ
         os.system("copyq &")
         print("CopyQ started.")
 
 def get_clipboard_data():
     try:
-        # Fetch clipboard data using CopyQ
+        # Fetch clipboard with CopyQ
         result = subprocess.run(['copyq', 'read', '0'], capture_output=True, text=True)
         if result.returncode == 0:
             data = result.stdout.strip()
@@ -92,7 +92,7 @@ def main():
     if clipboard_data:
         print(f"Clipboard text: {clipboard_data}")
 
-        # Assuming clipboard_data might contain file URIs for copying
+        # Assuming clipboard_data will have file URIs for copying
         destination = urllib.parse.unquote(sys.argv[1])
 
         # Format sources and destination
@@ -103,7 +103,7 @@ def main():
         command = f"/usr/bin/ultracopier cp {sources_formatted} \"{destination}\""
         print(f"Executing command: {command}")
 
-        # Execute the command
+        # Execute command
         os.system(command)
     else:
         print("No valid clipboard data found.")
